@@ -4,12 +4,15 @@ services:
     runtime: ruby
     region: oregon
     plan: 0.5c-512mb
+    branch: main
     buildCommand: bundle install
     preDeployCommand: bundle exec rails db:prepare
-    startCommand: bundle exec puma -C config/puma.rb
+    startCommand: bundle exec puma -C config/puma.rb -b tcp://0.0.0.0:$PORT
     healthCheckPath: /health
     envVars:
       - key: RAILS_ENV
+        value: production
+      - key: RACK_ENV
         value: production
       - key: SECRET_KEY_BASE
         generateValue: true
@@ -17,7 +20,6 @@ services:
         fromDatabase:
           name: bench-rails-db
           property: connectionString
-
 databases:
   - name: bench-rails-db
     region: oregon
