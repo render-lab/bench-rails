@@ -12,7 +12,11 @@ module Seed
     config.load_defaults 7.2
     config.api_only = true
     config.eager_load = Rails.env.production?
-    config.secret_key_base = ENV.fetch("SECRET_KEY_BASE", "dev-only-not-secret")
+    config.secret_key_base = if Rails.env.production?
+      ENV.fetch("SECRET_KEY_BASE")
+    else
+      ENV.fetch("SECRET_KEY_BASE", "dev-only-not-secret")
+    end
     config.hosts.clear
   end
 end
